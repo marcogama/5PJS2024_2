@@ -1,0 +1,132 @@
+CREATE DATABASE 5SBD_2_24
+DEFAULT CHARACTER SET utf8
+DEFAULT COLLATE utf8_general_ci;
+
+
+CREATE TABLE CargaTemp 
+( 
+ Id_carga INT IDENTITY(1,1) PRIMARY KEY NOT NULL,  
+ Id_Pedido INT(10),  
+ Nome_Cliente VARCHAR(50),  
+ Cpf INT(10),  
+ Email VARCHAR(30),  
+ Telefone INT(11),  
+ Cidade VARCHAR(30),  
+ Uf VARCHAR(5),  
+ Pais VARCHAR(30),  
+ Cod_Postal INT(10),  
+ SKU INT(20),  
+ Nome_Prod VARCHAR(30),  
+ Preco INT(10),  
+ Data_Pedido DATE,  
+ Quant INT(5)  
+); 
+
+CREATE TABLE Pedido 
+( 
+ Id_Pedido INT IDENTITY(1,1) PRIMARY KEY NOT NULL,    
+ Quant INT(5),  
+ SKU INT(20),  
+ Nome_Prod VARCHAR(30),  
+ Preco INT(10)  
+); 
+
+CREATE TABLE ItemPedido 
+( 
+ Id_ItemPedido INT IDENTITY(1,1) PRIMARY KEY NOT NULL,   
+ SKU INT(20),  
+ Quant INT(5),  
+ Preco INT(10),    
+ Data_Pedido DATE 
+); 
+
+CREATE TABLE Produto 
+( 
+ Id_Produto INT IDENTITY(1,1) PRIMARY KEY NOT NULL,  
+ Nome_Prod VARCHAR(30),  
+ Preco INT(10)  
+); 
+
+CREATE TABLE Cliente 
+( 
+ Id_Cliente INT IDENTITY(1,1) PRIMARY KEY NOT NULL,  
+ Nome_Cliente VARCHAR(50),  
+ Cpf INT(10),  
+ Tel INT(11) 
+); 
+
+CREATE TABLE Estoque 
+( 
+ Id_Produto_Estoque INT IDENTITY(1,1) PRIMARY KEY NOT NULL,  
+ Nome_Prod VARCHAR(30),   
+ Quant_Min INT(4),  
+ Quant_Max INT(4),  
+ UPC INT(20)  
+); 
+
+CREATE TABLE Compras 
+( 
+ Id_Compras INT IDENTITY(1,1) PRIMARY KEY NOT NULL,  
+ UPC INT(20),  
+ Quant INT(4),  
+ Nome_Prod VARCHAR(30) 
+); 
+
+CREATE TABLE Entrega 
+( 
+ Id_entrega INT IDENTITY(1,1) PRIMARY KEY NOT NULL,  
+ Cod_Postal INT(10),  
+ Pais VARCHAR(30),  
+ Cidade VARCHAR(30),  
+ UF VARCHAR(4) 
+); 
+
+CREATE TABLE Carrega 
+( 
+ Id_Carrega INT PRIMARY KEY,    
+ Data DATE,
+ Hora TIME
+); 
+
+CREATE TABLE Libera 
+( 
+ Id_Libera INT PRIMARY KEY,  
+ Data DATE,
+ Hora TIME
+); 
+
+CREATE TABLE Verifica
+( 
+ Id_Verifica INT PRIMARY KEY,    
+ Data DATE,
+ Hora TIME
+); 
+
+CREATE TABLE Retorna
+( 
+ Id_Retorna INT PRIMARY KEY,    
+ Data DATE,
+ Hora TIME
+); 
+
+ALTER TABLE Compras ADD FOREIGN KEY(id_Estoque) REFERENCES Estoque (id_Estoque);
+
+ALTER TABLE Carrega ADD FOREIGN KEY(Id_Cliente) REFERENCES Cliente (Id_Cliente);
+ALTER TABLE Carrega ADD FOREIGN KEY(Id_Pedido) REFERENCES Pedido (Id_Pedido);
+ALTER TABLE Carrega ADD FOREIGN KEY(Id_ItemPedido) REFERENCES ItemPedido (Id_ItemPedido);
+ALTER TABLE Carrega ADD FOREIGN KEY(Id_Produto) REFERENCES Produto (Id_Produto);
+ALTER TABLE Carrega ADD FOREIGN KEY(Id_carga) REFERENCES CargaTemp (Id_Carga);
+ALTER TABLE Carrega ADD FOREIGN KEY(Id_entrega) REFERENCES Entrega (Id_Entrega);
+ALTER TABLE Carrega ADD CONSTRAINT Id_Carrega (Id_Cliente, Id_Pedido, Id_ItemPedido, Id_Produto, Id_Carga, Id_Entrega);
+
+ALTER TABLE Libera ADD FOREIGN KEY(Id_Pedido) REFERENCES Pedido (Id_Pedido);
+ALTER TABLE Libera ADD FOREIGN KEY(Id_entrega) REFERENCES Entrega (Id_entrega);
+ALTER TABLE Carrega ADD CONSTRAINT Id_Libera (Id_Pedido, Id_Entrega);
+
+ALTER TABLE Verifica ADD FOREIGN KEY(Id_Pedido) REFERENCES Pedido (Id_Pedido);
+ALTER TABLE Verifica ADD FOREIGN KEY(Id_Produto_Estoque) REFERENCES Estoque (Id_Produto_Estoque);
+ALTER TABLE Carrega ADD CONSTRAINT Id_Verifica (Id_Pedido, Id_Produto_Estoque);
+
+ALTER TABLE Retorna ADD FOREIGN KEY(Id_Produto_Estoque) REFERENCES Estoque (Id_Produto_Estoque);
+ALTER TABLE Retorna ADD FOREIGN KEY(Id_Produto) REFERENCES Produto (Id_Produto);
+ALTER TABLE Carrega ADD CONSTRAINT Id_Retorna (Id_Produto, Id_Produto_Estoque);
