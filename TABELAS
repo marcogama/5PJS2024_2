@@ -117,16 +117,16 @@ ALTER TABLE Carrega ADD FOREIGN KEY(Id_ItemPedido) REFERENCES ItemPedido (Id_Ite
 ALTER TABLE Carrega ADD FOREIGN KEY(Id_Produto) REFERENCES Produto (Id_Produto);
 ALTER TABLE Carrega ADD FOREIGN KEY(Id_carga) REFERENCES CargaTemp (Id_Carga);
 ALTER TABLE Carrega ADD FOREIGN KEY(Id_entrega) REFERENCES Entrega (Id_Entrega);
-ALTER TABLE Carrega ADD CONSTRAINT Id_Carrega (Id_Cliente, Id_Pedido, Id_ItemPedido, Id_Produto, Id_Carga, Id_Entrega);
+ALTER TABLE Carrega ADD CONSTRAINT Id_Carrega PRIMARY KEY (Id_Cliente, Id_Pedido, Id_ItemPedido, Id_Produto, Id_Carga, Id_Entrega);
 
 ALTER TABLE Libera ADD FOREIGN KEY(Id_Pedido) REFERENCES Pedido (Id_Pedido);
 ALTER TABLE Libera ADD FOREIGN KEY(Id_entrega) REFERENCES Entrega (Id_entrega);
-ALTER TABLE Carrega ADD CONSTRAINT Id_Libera (Id_Pedido, Id_Entrega);
+ALTER TABLE Carrega ADD CONSTRAINT Id_Libera PRIMARY KEY (Id_Pedido, Id_Entrega);
 
 ALTER TABLE Verifica ADD FOREIGN KEY(Id_Pedido) REFERENCES Pedido (Id_Pedido);
 ALTER TABLE Verifica ADD FOREIGN KEY(Id_Produto_Estoque) REFERENCES Estoque (Id_Produto_Estoque);
-ALTER TABLE Carrega ADD CONSTRAINT Id_Verifica (Id_Pedido, Id_Produto_Estoque);
+ALTER TABLE Carrega ADD CONSTRAINT Id_Verifica PRIMARY KEY(Id_Pedido, Id_Produto_Estoque);
 
 ALTER TABLE Retorna ADD FOREIGN KEY(Id_Produto_Estoque) REFERENCES Estoque (Id_Produto_Estoque);
 ALTER TABLE Retorna ADD FOREIGN KEY(Id_Produto) REFERENCES Produto (Id_Produto);
-ALTER TABLE Carrega ADD CONSTRAINT Id_Retorna (Id_Produto, Id_Produto_Estoque);
+ALTER TABLE Carrega ADD CONSTRAINT Id_Retorna PRIMARY KEY(Id_Produto, Id_Produto_Estoque);
